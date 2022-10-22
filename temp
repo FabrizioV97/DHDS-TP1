@@ -1,0 +1,32 @@
+def viz_categorical(dataframe):
+    column_list = [column for column in dataframe.columns if len(dataframe[column].value_counts().index)>0 and len(dataframe[column].value_counts().index)<=25]
+    context_dataframe = dataframe[column_list]
+    
+    
+    # Calculating row index for plot based on x * 3 design
+    if context_dataframe.shape[1] % 3 != 0:
+        rows = round(context_dataframe.shape[1] / 3) + 1
+    else:
+        rows = context_dataframe.shape[1] / 3
+
+
+    # Plot constants
+    fig, axes = plt.subplots(rows,3, figsize=(15, 10))
+    fig.suptitle('Categorical variables')
+    
+    col_iter = 0
+    row_iter = 0
+
+
+    # Plotting
+    for column in context_dataframe.columns:
+        col_loc = context_dataframe.columns.get_loc(column)
+        sn.barplot(x=context_dataframe[column].value_counts().index, y=context_dataframe[column].value_counts().values, ax=axes[row_iter,col_iter])
+        axes[row_iter, col_iter].title.set_text(column)
+
+    
+        if (col_loc + 1) % 3 == 0 and col_loc != 0:
+            col_iter = 0
+            row_iter = row_iter + 1
+        else:
+            col_iter = col_iter + 1 
